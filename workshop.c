@@ -31,13 +31,17 @@ void view_inventory(Workshop_Inventory* inv);
 void update_stock(Workshop_Inventory* inv);
 void search_hardware(Workshop_Inventory* inv);
 int find_item(Workshop_Inventory *inv, ItemType type, int dimension_primary, float pitch, int dimension_secondary, float thickness);
+void save_inventory(Workshop_Inventory *inv);
+void load_inventory(Workshop_Inventory *inv);
 
 
 // Main Program
 int main() {
 	Workshop_Inventory inv = { 0 }; //sets all arrays and counts to 0 creates int for inventory
+	load_inventory(&inv);
+
 	int choice = 0;
-	
+
 	do {
 		display_menu(); //calls to function that displays menu and runs the function
 		scanf("%d", &choice);
@@ -69,7 +73,8 @@ int main() {
 			printf("\n");
 			break;
 		case 5:
-			printf("Exiting Program\n");
+			printf("Saving and Exiting program...\n");
+			save_inventory(&inv);
 			break;
 		default:
 			printf("Invalid choice. \n\n");
@@ -77,8 +82,6 @@ int main() {
 		}
 
 	} while (choice != 5);
-
-	printf("Broken through\n");
 
 	return 0; 
  }
@@ -261,4 +264,57 @@ void search_hardware(Workshop_Inventory* inv) {
 		printf("No Hardware found with %dmm diameter.\n", search_diam);
 	}
 	printf("\n");
+}
+
+void save_inventory(Workshop_Inventory *inv) {
+	FILE *file = fopen("Inventory.txt", "w");
+	if (file == NULL) {
+		printf("Error opening file for saving.\n");
+		return;
+	}
+
+	fprintf(file, "%d\n", inv->item_count);
+	
+	
+	for (int i =0; i < inv->item_count);
+		fprintf(file, "%d %d %.2f %d %.2f %d\n", 
+			inv->items[i].type,
+			inv->items[i].dimension_primary,
+			inv->items[i].pitch,
+			inv->items[i].dimension_secondary,
+			inv->items[i].thickness, 
+			inv->items[i].quantity);
+	}
+
+	fclose(file);
+	printf("Inventory saved to file successfully.\n");
+}
+
+void load_inventory(Workshop_Inventory *inv) {
+	File *file = fopen("Inventory.txt", "r");
+	if (file == NULL) {
+		printf("No existing inventory file found. Completly empty.\n\n");
+		return:
+	}
+	
+	if (fscanf(file, "%d", &inv->item_count) != 1) {
+		inv->item_count = 0;
+		fclose(file);
+		return;
+	}
+
+	for (int i =0; i < inv->item_count; i++) {
+		int type_int;
+		fscanf(file, "%d %d %f %d %f %d", 
+			&type_int,
+			&inv->items[i].dimension_primary,
+			&inv->items[i].pitch,
+			&inv->items[i].dimension_secondary,
+			&inv->items[i].thickness,
+			&inv->items[i].quantity);
+		inv->items[i].type = (ItemType)type_int;
+	}
+	
+	fclose(file);
+	printf("Loaded %d items from saved inventory.\n\n", inv->item_count);
 }
