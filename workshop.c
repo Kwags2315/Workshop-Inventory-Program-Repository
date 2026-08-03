@@ -30,7 +30,7 @@ void add_item(Workshop_Inventory *inv, ItemType type);
 void view_inventory(Workshop_Inventory* inv);
 void update_stock(Workshop_Inventory* inv);
 void search_hardware(Workshop_Inventory* inv);
-int find_item(Workshop_Inventory *inv, ItemType type, int dimension_primary, float pitch, int dimension_secondary, float thickness);
+int find_item(Workshop_Inventory *inv, int dimension_primary, float pitch, int dimension_secondary, float thickness);
 void save_inventory(Workshop_Inventory *inv);
 void load_inventory(Workshop_Inventory *inv);
 
@@ -59,7 +59,6 @@ int main() {
 				printf("Invalid Choice.\n");
 			}
 			break;
-		}
 		case 2:
 			view_inventory(&inv);
 			printf("\n");
@@ -102,7 +101,7 @@ void add_item(Workshop_Inventory *inv,ItemType type) { //function means go to me
 		printf("Inventory is full\n");
 		return;
 	}
-	Item *item = &inv->items[inv->item_count];
+	item *item = &inv->items[inv->item_count];
 	Item->type = type;
 	
 	if (type ==Type_Bolt) {
@@ -113,7 +112,7 @@ void add_item(Workshop_Inventory *inv,ItemType type) { //function means go to me
 	scanf("%f", &item->pitch);
 	printf("Enter Length: ");
 	scanf("%d", &item->dimension_secondary);
-	item->thickness = 0
+	item->thickness = 0;
 	}
 	else if (type == Type_Nut) {
 		printf("\n --- Add Nut ---\n");
@@ -122,17 +121,17 @@ void add_item(Workshop_Inventory *inv,ItemType type) { //function means go to me
 		printf("Enter Pitch: ");
 		scanf("%f", &item->pitch);
 		printf("Enter Height: ");
-		scanf("%d", &item->dimension_secondary;
+		scanf("%d", &item->dimension_secondary);
 		item-> thickness = 0;
 	}
-	else if (type = Type_Washer) {
+	else if (type == Type_Washer) {
 		printf("\n --- Add Washer ---\n");
 		printf("Enter hole size: (mm) ");
 		scanf("%d", &item->dimension_primary);
 		printf("Enter diamter: ");
 		scanf("%f", &item->dimension_secondary);
 		printf("Enter Thickness: ");
-		scanf("%d", &b->thickness);
+		scanf("%d", &item->thickness);
 		item->pitch = 0;
 	}
 
@@ -140,7 +139,7 @@ void add_item(Workshop_Inventory *inv,ItemType type) { //function means go to me
 	scanf("%d", &item->quantity);
 
 	inv->item_count++;
-	printf("Hardware Succesfully added.);
+	printf("Hardware Succesfully added.");
 }
 
 void view_inventory(Workshop_Inventory* inv) {
@@ -169,7 +168,7 @@ void view_inventory(Workshop_Inventory* inv) {
 				item->dimension_secondary,
 				item->quantity);
 		}else if (item->type == Type_Washer) {
-			printf("[%d] [Washer]  M%d Hole | Outer Diam: %dmm | Thick: %dmm | Qty: %d\n",
+			printf("[%d] [Washer]  M%d Hole | Outer Diam: %dmm | Thick: %.1fmm | Qty: %d\n",
 				i+1,
 				item->dimension_primary,
 				item->dimension_secondary,
@@ -195,7 +194,7 @@ int find_item(Workshop_Inventory* inv, int dimension_primary, float pitch, int d
 }
 
 void update_stock(Workshop_Inventory* inv) { //function that updates stock 
-	int type_index = 0;
+	int item_index = 0;
 	int new_quantity = 0;
 
 	printf("\n=== Update Stock Quantities ===\n");
@@ -237,7 +236,7 @@ void search_hardware(Workshop_Inventory* inv) {
 		Item *item =&inv->items[i];
 		
 		if(item->dimension_primary == search_diam) {
-			if (item->item == Type_Bolt){
+			if (item->type== Type_Bolt){
 				printf("[Bolt] M%d x %.1f | Length: %dmm | Qty: %d\n",
 				item->dimension_primary,
 				item->pitch,
@@ -276,7 +275,7 @@ void save_inventory(Workshop_Inventory *inv) {
 	fprintf(file, "%d\n", inv->item_count);
 	
 	
-	for (int i =0; i < inv->item_count);
+	for (int i =0; i < inv->item_count)
 		fprintf(file, "%d %d %.2f %d %.2f %d\n", 
 			inv->items[i].type,
 			inv->items[i].dimension_primary,
@@ -291,10 +290,10 @@ void save_inventory(Workshop_Inventory *inv) {
 }
 
 void load_inventory(Workshop_Inventory *inv) {
-	File *file = fopen("Inventory.txt", "r");
+	FILE *file = fopen("Inventory.txt", "r");
 	if (file == NULL) {
 		printf("No existing inventory file found. Completly empty.\n\n");
-		return:
+		return;
 	}
 	
 	if (fscanf(file, "%d", &inv->item_count) != 1) {
